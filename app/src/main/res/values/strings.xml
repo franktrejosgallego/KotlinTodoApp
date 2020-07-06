@@ -11,4 +11,5 @@
     <string name="already_registered_login_here">Already Registered? Login here</string>
     <string name="username">UserName</string>
     <string name="select_photo">Select Photo</string>
+    <string name="authentication_failed">Authentication Failed.</string>
 </resources>

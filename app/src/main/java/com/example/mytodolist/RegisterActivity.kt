@@ -1,46 +1,43 @@
 package com.example.mytodolist
 
-import android.app.Activity
-import android.content.ContentValues.TAG
+import android.content.ContentValues
 import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
+import android.util.Log.*
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
-import com.example.mytodolist.databinding.FragmentSignUpBinding
+import com.example.mytodolist.databinding.ActivityRegisterBinding
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-class SignUpFragment : Fragment() {
+class RegisterActivity : AppCompatActivity() {
+
     private lateinit var auth: FirebaseAuth
-    private lateinit var binding: FragmentSignUpBinding
+    private lateinit var binding: ActivityRegisterBinding
 
-    //----------------------- OnCreate Start
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_register)
 
-        binding = DataBindingUtil.inflate<FragmentSignUpBinding>(inflater, R.layout.fragment_sign_up, container, false)
         auth = Firebase.auth
 
         binding.signUpButton.setOnClickListener{view: View ->
             val email = binding.editTextTextEmailAddress.text.toString()
             val password = binding.editTextTextPassword.text.toString()
 
-         signUpUser(email,password)
+            signUpUser(email,password)
 
         }
 
         binding.alreadyRegistered.setOnClickListener{
-            view?.findNavController()?.navigate(R.id.action_signUpFragment_to_loginFragment)
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
         }
 
         binding.selectPhotoButton.setOnClickListener{
@@ -48,18 +45,6 @@ class SignUpFragment : Fragment() {
             intent.type = "image/*"
             startActivityForResult(intent, 0)
         }
-
-//        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//            super.onActivityResult(requestCode, resultCode, data)
-//            if(requestCode==0 && resultCode == Activity.RESULT_OK && data != null){
-//                Log.d("SignUp", "Photo Selected")
-//
-//                val uri = data.data
-//                val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-//            }
-//        }
-
-        return binding.root
     }
 
     private fun signUpUser(email: String, password: String) {
@@ -78,15 +63,16 @@ class SignUpFragment : Fragment() {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener{task->
                 if (task.isSuccessful) {
-                 Log.d("Login", "Account Created, Hurray!! id is ${task.result?.user?.uid} + $email")
-                    Toast.makeText(context, "Authentication Successful.",
+                    d("Login", "Account Created, Hurray!! id is ${task.result?.user?.uid} + $email")
+                    Toast.makeText(this, "Authentication Successful.",
                         Toast.LENGTH_SHORT).show()
-
-                    findNavController().navigate(R.id.action_signUpFragment_to_loginFragment)
+                    val intent = Intent(this, RegisterActivity::class.java)
+                    startActivity(intent)
+                    finish()
                 } else {
                     // If sign in fails, display a message to the user.
-                    Log.w(TAG, "createUserWithEmail:failure", task.exception)
-                    Toast.makeText(context, "Authentication failed.",
+                    w(ContentValues.TAG, "createUserWithEmail:failure", task.exception)
+                    Toast.makeText(this, "Authentication failed.",
                         Toast.LENGTH_SHORT).show()
                     updateUI(null)
                 }
@@ -96,6 +82,4 @@ class SignUpFragment : Fragment() {
     fun updateUI(currentUser: FirebaseUser?){
 
     }
-
-
 }
