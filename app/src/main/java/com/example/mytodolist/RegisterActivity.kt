@@ -4,12 +4,12 @@ import android.content.ContentValues
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.util.Log.*
 import android.view.View
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import com.example.mytodolist.databinding.ActivityRegisterBinding
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -29,9 +29,8 @@ class RegisterActivity : AppCompatActivity() {
         binding.signUpButton.setOnClickListener{view: View ->
             val email = binding.editTextTextEmailAddress.text.toString()
             val password = binding.editTextTextPassword.text.toString()
-
+            Log.i("RegisterActivity", "Sign Up Button Clicked")
             signUpUser(email,password)
-
         }
 
         binding.alreadyRegistered.setOnClickListener{
@@ -63,15 +62,25 @@ class RegisterActivity : AppCompatActivity() {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener{task->
                 if (task.isSuccessful) {
-                    d("Login", "Account Created, Hurray!! id is ${task.result?.user?.uid} + $email")
+                    Log.i("RegisterActivity", "Account Created, Hurray!! id is ${task.result?.user?.uid} + $email")
                     Toast.makeText(this, "Authentication Successful.",
                         Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, RegisterActivity::class.java)
+                    val intent = Intent(this, LoginActivity::class.java)
                     startActivity(intent)
                     finish()
+//Send Verification email
+                    val user = Firebase.auth.currentUser
+
+                    user!!.sendEmailVerification()
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                Log.d("RegisterActivity", "Email sent.")
+                            }
+                        }
+
                 } else {
                     // If sign in fails, display a message to the user.
-                    w(ContentValues.TAG, "createUserWithEmail:failure", task.exception)
+                    Log.i("RegisterActivity", "createUserWithEmail:failure", task.exception)
                     Toast.makeText(this, "Authentication failed.",
                         Toast.LENGTH_SHORT).show()
                     updateUI(null)
@@ -82,4 +91,35 @@ class RegisterActivity : AppCompatActivity() {
     fun updateUI(currentUser: FirebaseUser?){
 
     }
+
+
 }
+
+
+//private fun sendEmailVerificationWithContinueUrl() {
+//    // [START send_email_verification_with_continue_url]
+//    val auth = Firebase.auth
+//    val user = auth.currentUser!!
+//
+//    val url = "http://www.example.com/verify?uid=" + user.uid
+//    val actionCodeSettings = ActionCodeSettings.newBuilder()
+//        .setUrl(url)
+//        .setIOSBundleId("com.example.ios")
+//        // The default for this is populated with the current android package name.
+//        .setAndroidPackageName("com.example.android", false, null)
+//        .build()
+//
+//    user.sendEmailVerification(actionCodeSettings)
+//        .addOnCompleteListener { task ->
+//            if (task.isSuccessful) {
+//                Log.d("RegisterActivity", "Email sent.")
+//            }
+//        }
+//
+//    // [END send_email_verification_with_continue_url]
+//    // [START localize_verification_email]
+//    auth.setLanguageCode("fr")
+//    // To apply the default app language instead of explicitly setting it.
+//    // auth.useAppLanguage()
+//    // [END localize_verification_email]
+//}
