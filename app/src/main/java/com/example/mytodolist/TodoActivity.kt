@@ -1,12 +1,20 @@
 package com.example.mytodolist
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
+import android.media.Image
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.LinearInterpolator
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,48 +43,37 @@ class TodoActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_todo)
         auth = Firebase.auth
         database = Firebase.database.reference
-
         val user = auth.currentUser!!.uid
         taskReference =  FirebaseDatabase.getInstance().getReference("user-tasks").child(user)
         recycler = findViewById(R.id.task_list)
         recycler.layoutManager = LinearLayoutManager(this)
 
-        Log.i("TodoActivity", "user + ${user} + ${taskReference}")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        //Floating action button start
         binding.floatingActionButton.setOnClickListener{view: View ->
 
            val rootlayout = layoutInflater.inflate(R.layout.custompopup, null)
-
-            val popupWindow = PopupWindow(
-                rootlayout,
-                LinearLayout.LayoutParams.WRAP_CONTENT ,
-                LinearLayout.LayoutParams.WRAP_CONTENT, true
-            )
-            popupWindow.update();
-            popupWindow.setElevation(10.5F)
 
             val task_name = rootlayout.findViewById<EditText>(R.id.TaskName)
             val task_description = rootlayout.findViewById<EditText>(R.id.TaskDescription)
             val close_button = rootlayout.findViewById<Button>(R.id.CloseButton)
             val add_button = rootlayout.findViewById<Button>(R.id.AddButton)
 
+            //Pop window object
+            val popupWindow = PopupWindow(
+                rootlayout,
+                LinearLayout.LayoutParams.WRAP_CONTENT ,
+                LinearLayout.LayoutParams.WRAP_CONTENT, true
+            )
 
+            popupWindow.update();
+            popupWindow.setElevation(10.5F)
+            popupWindow.showAtLocation(
+
+                ToDoActivity, // Location to display popup window
+                Gravity.CENTER, // Exact position of layout to display popup
+                0, // X offset
+                0 // Y offset
+            )
 
             close_button.setOnClickListener{
                 popupWindow.dismiss()
@@ -86,31 +83,15 @@ class TodoActivity : AppCompatActivity() {
 
                 var name = task_name.text.toString()
                 var description = task_description.text.toString()
-                Log.i("TodoActivity", "Till Now All done NOW IMPLEMENT FOR ADDING TO FIREBASE + ${name}+ $description")
                 val userId = user
                 if(userId!= null){
-                writeNewPost(userId,name, description)}
+                writeNewTask(userId,name, description)}
                 popupWindow.dismiss()
-
-
             }
-            // Finally, show the popup window on app
-            //TransitionManager.beginDelayedTransition(root_layout)
-            Log.i("TodoActivity", "Show at locationE")
-            popupWindow.showAtLocation(
-
-                ToDoActivity, // Location to display popup window
-                Gravity.CENTER, // Exact position of layout to display popup
-                0, // X offset
-                0 // Y offset
-            )
 
         }// end of floating action
 
-
     }// end of oncreate-----------------------------------------------------------
-
-
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -135,7 +116,7 @@ class TodoActivity : AppCompatActivity() {
         }
     }
 
-    private fun writeNewPost(userId: String, taskname: String, taskdescription: String) {
+    private fun writeNewTask(userId: String, taskname: String, taskdescription: String) {
         // Create new post at /user-posts/$userid/$postid and at
         // /posts/$postid simultaneously
         val key = database.child("posts").push().key
@@ -163,17 +144,10 @@ class TodoActivity : AppCompatActivity() {
 
 
 
-    class TaskViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-        fun bind(task: Tasks){
-            itemView.taskName.text = task.taskname
-            itemView.taskDescription.text = task.taskdescription
-        }
-    }
 
-    private class TaskAdapter(
-        private val context: Context,
-        private val databaseReference: DatabaseReference
-    ): RecyclerView.Adapter<TaskViewHolder>() {
+//-----------------------------Adapter Class-----------------------------------------------
+    private class TaskAdapter(private val context: Context, private val databaseReference: DatabaseReference): RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+
         private val childEventListener: ChildEventListener?
         private val taskIds = ArrayList<String>()
         private val tasks = ArrayList<Tasks>()
@@ -183,8 +157,6 @@ class TodoActivity : AppCompatActivity() {
             // Create child event listener
             // [START child_event_listener_recycler]
             val childEventListener = object : ChildEventListener {
-
-
                 override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
                     Log.d("GetData", "onChildAdded:" + dataSnapshot.key!!)
 
@@ -264,24 +236,40 @@ class TodoActivity : AppCompatActivity() {
             }
             databaseReference.addChildEventListener(childEventListener)
             // [END child_event_listener_recycler]
-
             // Store reference to listener so it can be removed on app stop
             this.childEventListener = childEventListener
 
+        } //end of Init()
 
 
+        class TaskViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+            val auth = Firebase.auth
+            val user = auth.currentUser!!.uid
+            val taskReference =  FirebaseDatabase.getInstance().getReference("user-tasks").child(user)
 
+            fun bind(task: Tasks, taskId: String) {
+                itemView.taskName.text = task.taskname
+                itemView.taskDescription.text = task.taskdescription
+                val item = taskId
+                itemView.deleteButton.setOnClickListener{
+                    val value= taskReference.child(taskId)
+                    value.removeValue()
+                    Log.i("TodoActivity","VALUE Deleted")
+                }
+            }
         }
-
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
             val inflater = LayoutInflater.from(context)
             val view = inflater.inflate(R.layout.list_item_view, parent, false)
             return TaskViewHolder(view)
+
         }
 
         override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
-            holder.bind(tasks[position])
+            holder.bind(tasks[position], taskIds[position])
+            holder.itemView.checkBoxItem.setOnClickListener{
+            }
         }
 
         override fun getItemCount(): Int = tasks.size
@@ -291,14 +279,12 @@ class TodoActivity : AppCompatActivity() {
                 databaseReference.removeEventListener(it)
             }
         }
+ } // end of adapter class
 
-    }
-
-}
-
+} // end of Todo Activity
 
 
-
+// Task data class
 data class Tasks(
 
     var uid: String? ="",

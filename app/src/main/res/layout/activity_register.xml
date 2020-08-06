@@ -15,76 +15,42 @@
         android:orientation="vertical"
         >
 
-        <Button
-            android:id="@+id/selectPhotoButton"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="15dp"
-            android:layout_gravity="center"
-            android:text="@string/select_photo"
-            android:textColor="@color/white"
-            android:background="@drawable/rounded_select_image"
-            />
+     <ImageView
+         android:layout_width="200dp"
+         android:layout_height="200dp"
+         android:layout_gravity="center_horizontal"
+         android:src="@drawable/teamworkingchecklistbackgroundfreepik">
+
+
+     </ImageView>
 
         <EditText
             android:id="@+id/editTextUserName"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
+            style="@style/credentials_fields"
             android:drawableStart="@drawable/ic_action_person"
-            android:ems="10"
-            android:layout_marginBottom="7dp"
-            android:background="@drawable/rounded_edittext"
             android:hint="@string/username"
-            android:inputType="text"
-            android:textColor="@color/white"
-            android:textColorHint="@color/white"/>
+            android:inputType="text" />
 
         <EditText
             android:id="@+id/editTextTextEmailAddress"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
+            style="@style/credentials_fields"
             android:drawableStart="@drawable/ic_action_email_address"
-            android:ems="10"
-            android:layout_marginBottom="7dp"
-            android:background="@drawable/rounded_edittext"
             android:hint="@string/email_address"
-            android:inputType="textEmailAddress"
-            android:textColor="@color/white"
-            android:textColorHint="@color/white"/>
+            android:inputType="textEmailAddress" />
 
         <EditText
             android:id="@+id/editTextTextPassword"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
+            style="@style/credentials_fields"
             android:drawableStart="@drawable/ic_action_password"
-            android:ems="10"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/rounded_edittext"
             android:hint="@string/password"
             android:inputType="textPassword"
-            android:textColor="@color/white"
-            android:textColorHint="@color/white"
-            android:textSize="16sp"
             />
 
 
         <Button
             android:id="@+id/signUpButton"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="@string/sign_up"
-            android:layout_marginBottom="40dp"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:background="@drawable/rounded_edittext" />
+            style="@style/mainbutton_style"
+            android:text="@string/sign_up" />
 
         <TextView
             android:id="@+id/alreadyRegistered"
@@ -92,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/already_registered_login_here"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/copy"
             android:textSize="15sp"/>
 
 

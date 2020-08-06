@@ -35,6 +35,7 @@ class LoginActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
         auth = Firebase.auth
         database = Firebase.database.reference
+
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
@@ -46,8 +47,6 @@ class LoginActivity : AppCompatActivity() {
         binding.loginButton.setOnClickListener { view: View ->
         val email = binding.editTextTextEmailAddress.text.toString()
         val password = binding.editTextTextPassword.text.toString()
-        Log.i("LoginActivity", "Email is $email")
-        Log.i("LoginActivity", "Email is $password")
         signInUser(email, password)
         }
 
@@ -69,6 +68,17 @@ class LoginActivity : AppCompatActivity() {
     //Sign In explicaitly by email and password.
         private fun signInUser(email:String, password: String){
 
+        if (email == "") {
+            binding.editTextTextEmailAddress.error = "Please Enter Your Email Address"
+            binding.editTextTextEmailAddress.requestFocus()
+            return
+        }
+        if (password == "") {
+            binding.editTextTextPassword.error = "Please Enter Your Password"
+            binding.editTextTextPassword.requestFocus()
+            return
+        }
+
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful)
@@ -82,7 +92,7 @@ class LoginActivity : AppCompatActivity() {
                     } else
                     { // If sign in fails, display a message to the user.
                         Log.i("LoginActivity", "signInWithEmail:failure", task.exception)
-                        Toast.makeText(this, "Authentication failed. Try Again", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Authentication failed. Try Again ${task.exception}", Toast.LENGTH_SHORT).show()
                         updateUI(null)
                     }
                 }
@@ -185,7 +195,6 @@ class LoginActivity : AppCompatActivity() {
 
     private fun onAuthSuccess(user: FirebaseUser) {
         val username = usernameFromEmail(user.email!!)
-
         // Write new user
         writeNewUser(user.uid, username, user.email)
 

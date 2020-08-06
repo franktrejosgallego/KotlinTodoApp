@@ -6,7 +6,7 @@
 
     <item
         android:id="@+id/sign_out"
-        android:icon="@drawable/logout"
+        android:icon="@drawable/pngtreeshutdown"
 
         android:title="SignOut"
         app:showAsAction="always" />

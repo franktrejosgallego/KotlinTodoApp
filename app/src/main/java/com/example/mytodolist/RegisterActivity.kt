@@ -39,11 +39,6 @@ class RegisterActivity : AppCompatActivity() {
             finish()
         }
 
-        binding.selectPhotoButton.setOnClickListener{
-            val intent = Intent(Intent.ACTION_PICK )
-            intent.type = "image/*"
-            startActivityForResult(intent, 0)
-        }
     }
 
     private fun signUpUser(email: String, password: String) {
@@ -53,7 +48,7 @@ class RegisterActivity : AppCompatActivity() {
             return
         }
         if (password == "") {
-            binding.editTextTextPassword.error = "Please Enter Your Email Address"
+            binding.editTextTextPassword.error = "Please Enter Your Password"
             binding.editTextTextPassword.requestFocus()
             return
         }
@@ -68,7 +63,8 @@ class RegisterActivity : AppCompatActivity() {
                     val intent = Intent(this, LoginActivity::class.java)
                     startActivity(intent)
                     finish()
-//Send Verification email
+
+                    //Send Verification email
                     val user = Firebase.auth.currentUser
 
                     user!!.sendEmailVerification()
@@ -81,7 +77,7 @@ class RegisterActivity : AppCompatActivity() {
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.i("RegisterActivity", "createUserWithEmail:failure", task.exception)
-                    Toast.makeText(this, "Authentication failed.",
+                    Toast.makeText(this, "Authentication failed. ${task.exception}",
                         Toast.LENGTH_SHORT).show()
                     updateUI(null)
                 }
@@ -96,30 +92,3 @@ class RegisterActivity : AppCompatActivity() {
 }
 
 
-//private fun sendEmailVerificationWithContinueUrl() {
-//    // [START send_email_verification_with_continue_url]
-//    val auth = Firebase.auth
-//    val user = auth.currentUser!!
-//
-//    val url = "http://www.example.com/verify?uid=" + user.uid
-//    val actionCodeSettings = ActionCodeSettings.newBuilder()
-//        .setUrl(url)
-//        .setIOSBundleId("com.example.ios")
-//        // The default for this is populated with the current android package name.
-//        .setAndroidPackageName("com.example.android", false, null)
-//        .build()
-//
-//    user.sendEmailVerification(actionCodeSettings)
-//        .addOnCompleteListener { task ->
-//            if (task.isSuccessful) {
-//                Log.d("RegisterActivity", "Email sent.")
-//            }
-//        }
-//
-//    // [END send_email_verification_with_continue_url]
-//    // [START localize_verification_email]
-//    auth.setLanguageCode("fr")
-//    // To apply the default app language instead of explicitly setting it.
-//    // auth.useAppLanguage()
-//    // [END localize_verification_email]
-//}

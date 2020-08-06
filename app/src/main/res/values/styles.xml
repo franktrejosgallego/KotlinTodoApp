@@ -11,7 +11,31 @@
         <item name="android:paddingStart">30dp</item>
         <item name="android:paddingEnd">30dp</item>
         <item name="android:paddingTop">50dp</item>
-        <item name="android:background">@color/light_blue</item>
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <style name="credentials_fields">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:ems">10</item>
+        <item name ="android:layout_marginBottom">7dp</item>
+        <item name="android:background">@drawable/rounded_edittext</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorHint">@color/white</item>
+    </style>
+
+    <style name="mainbutton_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">7dp</item>
+        <item name="android:layout_marginBottom">30dp</item>
+        <item name="android:background">@drawable/rounded_edittext</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
 </resources>

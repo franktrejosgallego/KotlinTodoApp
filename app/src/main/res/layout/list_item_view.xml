@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,7 +14,7 @@
 
 
         <CheckBox
-            android:id="@+id/checkBox"
+            android:id="@+id/checkBoxItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
@@ -21,7 +22,7 @@
 
         <LinearLayout
             android:id="@+id/linearLayout2"
-            android:layout_width="320dp"
+            android:layout_width="260dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
@@ -47,9 +48,26 @@
                 android:textSize="18dp">
 
             </TextView>
+
         </LinearLayout>
 
-<!--        <Button-->
+        <Button
+            android:id="@+id/deleteButton"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/rounded_select_image"
+            android:text="-"
+            android:textColor="@color/copy"
+            android:textStyle="bold"
+
+             />
+
+
+
+
+
+        <!--        <Button-->
 <!--            android:id="@+id/deleteTask"-->
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
@@ -60,6 +78,11 @@
 <!--            android:textStyle="bold"-->
 <!--            />-->
 
+
+
+
+
     </LinearLayout>
+
 </layout>
 
